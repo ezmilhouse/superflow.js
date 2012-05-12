@@ -1,0 +1,335 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Superflow.js by ezmilhouse</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Superflow.js</h1>
+        <p>superflow.js - async flow control - 3K</p>
+        <p class="view"><a href="https://github.com/ezmilhouse/superflow.js">View the Project on GitHub <small>ezmilhouse/superflow.js</small></a></p>
+        <ul>
+          <li><a href="https://github.com/ezmilhouse/superflow.js/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/ezmilhouse/superflow.js/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/ezmilhouse/superflow.js">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Superflow.js</h1>
+
+<p>a asynchronous flow controller</p>
+
+<h2>Motivation</h2>
+
+<p>I needed something to handle my asynchronous flows in client applications. I
+like <a href="https://github.com/substack/node-seq">substack's sequencer for Node.js</a> a
+lot, so this is where the inspiration came from and therefore it basically
+follows the same syntax.</p>
+
+<h2>Quickstart</h2>
+
+<div class="highlight">
+<pre>
+
+    <span class="c1">// sequential</span>
+
+    <span class="nx">superflow</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="c1">// sync</span>
+            <span class="k">return</span> <span class="s1">'a'</span><span class="p">;</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="s1">'b'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+
+            <span class="c1">// async</span>
+            <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">);</span>
+            <span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'a,b'</span><span class="p">,</span> <span class="nx">seq</span><span class="p">.</span><span class="nx">vars</span><span class="p">);</span>
+        <span class="p">});</span>
+
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre>
+
+    <span class="c1">// parallel actions</span>
+
+    <span class="nx">superflow</span>
+        <span class="p">.</span><span class="nx">par</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="c1">// sync</span>
+            <span class="k">return</span> <span class="s1">'a'</span><span class="p">;</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">par</span><span class="p">(</span><span class="s1">'b'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+
+            <span class="c1">// async</span>
+            <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">);</span>
+            <span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'a,b'</span><span class="p">,</span> <span class="nx">seq</span><span class="p">.</span><span class="nx">vars</span><span class="p">);</span>
+        <span class="p">});</span>
+
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre>
+
+    <span class="c1">// sequential &amp; parallel actions</span>
+
+    <span class="nx">superflow</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="c1">// sync</span>
+            <span class="k">return</span> <span class="s1">'a'</span><span class="p">;</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">par</span><span class="p">(</span><span class="s1">'b'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+
+            <span class="c1">// async</span>
+            <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">);</span>
+            <span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">par</span><span class="p">(</span><span class="s1">'c'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="c1">// sync</span>
+            <span class="k">return</span> <span class="s1">'c'</span><span class="p">;</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="s1">'d'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+
+            <span class="c1">// async</span>
+            <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="s1">'d'</span><span class="p">);</span>
+            <span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'a,b,c,d'</span><span class="p">,</span> <span class="nx">seq</span><span class="p">.</span><span class="nx">vars</span><span class="p">);</span>
+        <span class="p">});</span>
+
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre>
+
+    <span class="c1">// use set/get to return values</span>
+
+    <span class="nx">superflow</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="c1">// sync</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+
+            <span class="kd">var</span> <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+            <span class="c1">// async</span>
+            <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">that</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'b'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">);</span>
+                <span class="nx">cb</span><span class="p">();</span>
+            <span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'a'</span><span class="p">));</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'b'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'b'</span><span class="p">));</span>
+
+        <span class="p">});</span>
+
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre>
+
+    <span class="c1">// use .die() to kill a flow</span>
+
+    <span class="nx">superflow</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'a'</span><span class="p">)</span> <span class="o">===</span> <span class="s1">'a'</span><span class="p">)</span> <span class="p">{</span>
+
+                <span class="c1">// kill flow</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">die</span><span class="p">();</span>
+
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+
+                <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'c'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">);</span>
+
+            <span class="p">}</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'c'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'a'</span><span class="p">));</span> <span class="c1">// will be 'a'</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'b'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'b'</span><span class="p">));</span> <span class="c1">// will be undefined</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'c'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'c'</span><span class="p">));</span> <span class="c1">// will be undefined</span>
+
+        <span class="p">});</span>
+
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre>
+
+    <span class="c1">// use conditional .die() to kill a flow, based on expression returning</span>
+    <span class="c1">// true or false</span>
+
+    <span class="nx">superflow</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="c1">// kill flow if expression (1st param) is `true`,</span>
+            <span class="c1">// otherwise return 2nd param</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">die</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'a'</span><span class="p">)</span> <span class="o">===</span> <span class="s1">'a'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'c'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'a'</span><span class="p">));</span> <span class="c1">// will be 'a'</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'b'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'b'</span><span class="p">));</span> <span class="c1">// will be undefined</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'c'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'c'</span><span class="p">));</span> <span class="c1">// will be undefined</span>
+
+        <span class="p">});</span>
+
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre>
+
+    <span class="c1">// use .die() as a chainable function</span>
+
+    <span class="nx">superflow</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">die</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'a'</span><span class="p">)</span> <span class="o">===</span> <span class="s1">'a'</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'c'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'a'</span><span class="p">));</span> <span class="c1">// will be 'a'</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'b'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'b'</span><span class="p">));</span> <span class="c1">// will be undefined</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'c'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'c'</span><span class="p">));</span> <span class="c1">// will be undefined</span>
+
+        <span class="p">});</span>
+
+</pre>
+</div>
+
+
+<div class="highlight">
+<pre>
+
+    <span class="c1">// use .die() with function as 2nd param to overwrite .end() function</span>
+
+    <span class="nx">superflow</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">die</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'a'</span><span class="p">)</span> <span class="o">===</span> <span class="s1">'a'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'new .end()'</span><span class="p">);</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'a'</span><span class="p">));</span> <span class="c1">// will be 'a'</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'b'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'b'</span><span class="p">));</span> <span class="c1">// will be undefined</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'c'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'c'</span><span class="p">));</span> <span class="c1">// will be undefined</span>
+
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">seq</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'c'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">);</span>
+
+        <span class="p">})</span>
+        <span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'a'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'a'</span><span class="p">));</span> <span class="c1">// will be 'a'</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'b'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'b'</span><span class="p">));</span> <span class="c1">// will be undefined</span>
+            <span class="nx">log</span><span class="p">(</span><span class="s1">'c'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'c'</span><span class="p">));</span> <span class="c1">// will be undefined</span>
+
+        <span class="p">});</span>
+
+</pre>
+</div>
+
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/ezmilhouse">ezmilhouse</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-2025332-8");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
