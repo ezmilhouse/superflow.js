@@ -32,7 +32,7 @@ superflow
 
     })
     .end(function() {
-        log('[sample1] res1, res2, res3, res4', this.vars);
+        console.log('[sample1] res1, res2, res3, res4', this.vars);
     });
 
 // #2 - use set/get to handle results
@@ -73,10 +73,10 @@ superflow
 
     })
     .end(function() {
-        log('[sample2] res1', this.get('res1'));
-        log('[sample2] res2', this.get('res2'));
-        log('[sample2] res3', this.get('res3'));
-        log('[sample2] res4', this.get('res4'));
+        console.log('[sample2] res1', this.get('res1'));
+        console.log('[sample2] res2', this.get('res2'));
+        console.log('[sample2] res3', this.get('res3'));
+        console.log('[sample2] res4', this.get('res4'));
     });
 
 
@@ -94,8 +94,8 @@ superflow
 
     })
     .end(function() {
-        log('[sample3] res1', this.get('res1'));
-        log('[sample3] res2', this.get('res2'));
+        console.log('[sample3] res1', this.get('res1'));
+        console.log('[sample3] res2', this.get('res2'));
     });
 
 
@@ -116,9 +116,9 @@ superflow
         return 3;
     })
     .end(function() {
-        log('[sample4] res1', this.get('res1'));
-        log('[sample4] res2', this.get('res2'));
-        log('[sample4] res3', this.get('res3'));
+        console.log('[sample4] res1', this.get('res1'));
+        console.log('[sample4] res2', this.get('res2'));
+        console.log('[sample4] res3', this.get('res3'));
     });
 
 // #5 kill flow and overwrite .end()
@@ -130,12 +130,12 @@ superflow
     .seq(function() {
         if (this.get('res1') === 1) {
             this.die(function() {
-                log('[sample5] ... but this will!')
+                console.log('[sample5] ... but this will!')
             });
         } else {
             this.set('res2', 2);
         }
     })
     .end(function() {
-        log('[sample5] this will not show up ...')
+        console.log('[sample5] this will not show up ...')
     });
